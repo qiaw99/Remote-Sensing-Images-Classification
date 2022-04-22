@@ -23,6 +23,7 @@ jobs:
         python3 -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip3 install tensorflow
+        pip3 install matplotlib
     - name: Evaluate the model
       run: |
         python3 evaluate.py
