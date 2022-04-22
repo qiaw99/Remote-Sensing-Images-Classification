@@ -1,2 +1,5 @@
 # TODO
 numpy==1.21.5
+matplotlib==3.5.1
+tensorflow==2.8.0
+opencv-python==4.5.5.64

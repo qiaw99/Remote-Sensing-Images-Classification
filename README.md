@@ -2,7 +2,7 @@
 
 ## Installation
 ```
-git-lfs
+git-lfs clone git@github.com:qiaw99/Remote-Sensing-Images-Classification.git
 ```
 
 ## Environment
