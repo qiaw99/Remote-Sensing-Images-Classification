@@ -50,8 +50,8 @@ def evaluate():
     print("[Info] loading weights.")
     model.load_weights('./checkpoints/my_checkpoint')
     with open("./data-in-numpy/test.npy", "rb") as f:
-        X_val = np.load(f)
-        y_val = np.load(f)
+        X_val = np.load(f, allow_pickle=True)
+        y_val = np.load(f, allow_pickle=True)
 
     X_val = X_val / 255.0
 
