@@ -22,8 +22,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        cd tensorflow
-        pip3 install tensorflow-2.8.0-cp38-cp38-manylinux2010_x86_64.whl
+        pip3 install tensorflow
     - name: Evaluate the model
       run: |
         python3 evaluate.py
