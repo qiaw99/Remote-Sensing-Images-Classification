@@ -20,8 +20,10 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        python3 -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        cd tensorflow
+        pip3 install tensorflow-2.8.0-cp38-cp38-manylinux2010_x86_64.whl
     - name: Evaluate the model
       run: |
         python3 evaluate.py
