@@ -23,11 +23,9 @@ jobs:
         python3 -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip3 install tensorflow
-        pip3 install matplotlib
         pip3 install --upgrade gdown
         gdown https://drive.google.com/drive/folders/1-1g_WCDgor5eJfuIry7Zkrib2_FBsrSf?usp=sharing -O /tmp/folder --folder
-        cd tmp/folder
-        ls
+        ls -R
     - name: Evaluate the model
       run: |
         python3 evaluate.py
