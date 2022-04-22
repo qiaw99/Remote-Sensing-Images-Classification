@@ -48,7 +48,7 @@ def evaluate():
     model = Model(inputs, output)
 
     print("[Info] loading weights.")
-    model.load_weights('./tmp/folder/my_checkpoint')
+    model.load_weights('./checkpoints/my_checkpoint')
     with open("./data-in-numpy/test.npy", "rb") as f:
         X_val = np.load(f, allow_pickle=True)
         y_val = np.load(f, allow_pickle=True)
