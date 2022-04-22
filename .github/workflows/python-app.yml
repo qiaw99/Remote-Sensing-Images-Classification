@@ -25,7 +25,7 @@ jobs:
         pip3 install tensorflow
         pip3 install matplotlib
         pip3 install --upgrade gdown
-        gdown https://drive.google.com/drive/folders/1Lq5uUrdwEdQhcjFNwQIqwRPES0wdtB7T?usp=sharing -O /tmp/folder --folder
+        gdown https://drive.google.com/drive/folders/1-1g_WCDgor5eJfuIry7Zkrib2_FBsrSf?usp=sharing -O /tmp/folder --folder
         cd tmp/folder
         ls
     - name: Evaluate the model
