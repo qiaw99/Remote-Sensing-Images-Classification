@@ -25,7 +25,7 @@ jobs:
         pip3 install tensorflow
         pip3 install --upgrade gdown
         gdown https://drive.google.com/drive/folders/1-1g_WCDgor5eJfuIry7Zkrib2_FBsrSf?usp=sharing -O /tmp/folder --folder
-        gdown https://drive.google.com/file/d/1-0Uf1yBJku2i9wBtDTC06UvGF2RFcJIB/view?usp=sharing
+        gdown 1-0Uf1yBJku2i9wBtDTC06UvGF2RFcJIB
         ls -R
     - name: Evaluate the model
       run: |
