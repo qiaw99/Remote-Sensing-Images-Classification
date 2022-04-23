@@ -4,15 +4,17 @@
 ```
 git-lfs clone git@github.com:qiaw99/Remote-Sensing-Images-Classification.git
 ```
+*Notice that git might not be enough, because data stored in \*.npy and \*.zip files exceed the limitation of git(100MB). So please instead using [git-lfs](https://git-lfs.github.com/).*
 
 ## Environment
-Google Colab with GPU, TensorFlow version: 2.8.0
+Windows, Google Colab with GPU, TensorFlow version: 2.8.0
 
 ## Overview
-* [Getting data](#40)
-* [Experimental setup and baseline](#41)
-* [Evaluation](#43)
-* [Project structure](#44)
+* Report
+    * [Project structure](#44)
+    * [Getting data](#40)
+    * [Experimental setup and baseline](#41)
+    * [Evaluation](#43)
 
 <h2 id=44> The whole project structure should be like this: </h2>
 
@@ -29,7 +31,24 @@ Google Colab with GPU, TensorFlow version: 2.8.0
 ```
 
 ## Evaluation of model
-If you just want to see how good this model works, you can check it by [pipeline](https://github.com/qiaw99/Remote-Sensing-Images-Classification/actions). However, if you would like to test the model on your own data, you could use __**evaluation.ipynb**__ and replace the corresponding *.npy files. If you want to do it convenientlly, we can execute __code_challenge.ipynb__ but you have to structure your project like [this](#44). *__Note: do not use evaluate.py for evaluation. This is only for pipeline!__*
+
+<div>
+  <a href="https://github.com/qiaw99/Remote-Sensing-Images-Classification/actions"><img src="https://github.com/wkentaro/gdown/workflows/ci/badge.svg"></a>
+</div>
+
+If you just want to see how good this model works, you can check it by [pipeline](https://github.com/qiaw99/Remote-Sensing-Images-Classification/actions). However, if you would like to test the model on your own data, you could use __**evaluation.ipynb**__ and replace the corresponding *.npy files. If you want to do it convenientlly, we can execute __code_challenge.ipynb__ but you have to structure your project like [this](#44). The training happens in __code_challenge.ipynb__, so you could see all the details there. In __model.ipynb__, only the process is provided but the model has not been trained.  *__Note: do not use evaluate.py for evaluation. This is only for pipeline!__* 
+
+# Pipeline:
+## Testing environment: 
+Ubuntu 18.04, Tensorflow 2.8.0.
+
+**Problem:**
+I met the problem that in pipeline, __*.npy__ files cannot be correctly read, see [issue here](https://github.com/qiaw99/Remote-Sensing-Images-Classification/issues/1). The solution is, by using package [gdown](https://github.com/wkentaro/gdown) to download them directly from Google Drive:
+``` yml
+gdown folder_address -O /tmp/folder --folder
+gdown file_id
+```
+
 
 #  Introduction
 This is a **Coding Challenge from Project CV4RS at TU Berlin.** Data consists of 1091 training data and 279 testing data which are from 21 different classes:
@@ -144,6 +163,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 ### __2 a)__
 Now, we should look into the data itself. 
 ![](./img/Figure_1.png)
+
 The x-axis stands for each corresponding class and y-axis stands for the number of images contained in each subfolders. Observe that the data is not so equally distributed. The average number of images is __51.95__ as in the figure listed. Furthermore, we see that the variance of data is quite large which means __the data distribution is not balanced!__
 
 ### __2 b)__
@@ -239,6 +259,22 @@ print("{}:{},{}:{}.".format(model.metrics_names[0],values[0],model.metrics_names
 > 9/9 [==============================] - 59s 6s/step - loss: 3.2318 - accuracy: 0.4167
 loss:3.2318239212036133,accuracy:0.4166666567325592.
 ```
+
+We can plot some images to check the true labels and the predicted labels: 
+```py
+plt.figure(figsize=(20,20))
+for i in range(0, 25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(X_val[i*10])
+    plt.xlabel("True label: " + class_names[y_val[i*10]] + ", prediced: " + class_names[pred_classes_argmax[i*10]])
+plt.show()
+```
+ <img src="./img/predicted.png" width = "1000" height = "500"  align=center />
+ 
+It's a little bit unclear, but you could find this image in **img/predicted.png.**
 
 ![](./img/loss.png)
 ![](./img/loss1.png)
