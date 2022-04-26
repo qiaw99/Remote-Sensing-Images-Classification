@@ -64,7 +64,7 @@ class_names = [
 'river', 'runway', 'sparseresidential',
 'storagetanks', 'tenniscourt']
 ```
-However, during preprossing step, it was figured out that not all data can be used. Most of data have shape: (256, 256, 3). But some of data have different size and I would just discard them.
+However, during preprossing step, it was figured out that not all data can be used. Most of data have shape: (256, 256, 3). But some of data have different size(smaller than 256 * 256). In principle, we can interpolate some values(bilinear interpolation) to those images so that they could become same size as the most images. However, I would just discard them.
 
 # Report 
 <h2 id=40> 1. Get data:</h2> 
@@ -114,7 +114,7 @@ for c in class_names:
   print(os.getcwd())
   counter += 1
 ```
-We can read all images with help of opencv and store those images as numpy arrays in shape of (256, 256, 3). As we go through all subfolders of **train**, we  should also annotate the corresponding label to each image using index of range from 0 to 20 standing for each class as mentioned before.
+We can read all images with help of opencv and store those images as numpy arrays in shape of (256, 256, 3). As we go through all subfolders of **train**, we  should also annotate the corresponding label to each image using index of range from 0 to 20 standing for each class as mentioned before. In error, we could see the images whose shape differ from others.
 
 With that, we can virtualize some of images: 
 ```py
@@ -130,7 +130,7 @@ plt.show()
 ```
 ![](./img/data.png)
 
- However, this data cannot be directly used for training and evaluation, you should normalize them firstly before use: 
+ However, this data cannot directly be used for training and evaluation, you should normalize them firstly before use: 
 ```py
 # Normalize pixel values to be between 0 and 1
 X = X / 255.0
@@ -138,8 +138,9 @@ X = X / 255.0
 
 2. Alternatively, you could use data that I've preprocessed which is located in folder **data-in-numpy**. In it, the structure is as following: 
     ```
-    - test.npy
-    - train.npy
+    - data-in-numpy
+        - test.npy
+        - train.npy
     ```
     You should put them into folder **Challenge_dataset**. The training data has size: **(1076, 256, 256, 3)** and testing data has size **(276, 256, 256, 3)**. Then you could reload the data with help of two npy files: 
     ```py
@@ -152,7 +153,7 @@ X = X / 255.0
         y = np.load(f)
     ```
 
-X, y are all data for training which we have to split them into traing data and validation data(80/20%) before we can really start training our model. In this case, I would use the defined function from sklearn: 
+X, y are all data for training which we have to split them into traing data and validation data(80/20%) before we can really start training our model. In this case, I would use the predefined function from sklearn: 
 ```py
 from sklearn.model_selection import train_test_split
 
@@ -174,7 +175,7 @@ A baseline model should be established. However, I only build one model because 
 
 __Improvements:__
 * Within model: ResNet uses already Batch Normalization. What's more, we could use __dropout__ and __data augmentation__ like __clipping, rotation__, etc. so that the model can become more stable to unseen images.
-* For model: In recent year, __transformer__ using __Attention mechanism__ which was published in 2017 is proven as really well performance model in the field of __Natural Language Processing(NLP)__. Recently, transformer is used also in the field of Computer Vision as __vision transformer(ViT)__ which is published in 2020 by putting more information(patch and position embedding). Thus, I would believe that using ViT would be a good way to improve. 
+* For model: In recent year, __transformer__ using __Attention mechanism__ which was published in 2017 is proven as really well performance model in the field of __Natural Language Processing(NLP)__. Recently, transformer is used also in the field of Computer Vision as __vision transformer(ViT)__ which is published in 2021 by putting more information(patch and position embedding). Thus, I would believe that using ViT would be a good way to improve if the given number of training images are enough much. 
 
 ### __2 d)__
 The evaluation metrics for classification is commonly computing __the cross entropy loss between the labels and predictions__.
@@ -224,15 +225,18 @@ I've decided that for convolutional part, the pretrained ResNet50 will be used w
 - Number of epochs: 100
 - Learning rate: 0.001
 
-Then goto the correct parrent folder:
+All weights of trained model are store as checkpoint located at folder __checkpoints__ which you shouldn't modify. With checkpoint, you could rebuild the same model in tensorflow as follow:
+
+1. Goto the correct parrent folder:
 ```py
 os.chdir("drive/MyDrive/Challenge_dataset/")
 ```
-Then you could reload weights for the model: 
+2. Define the model correctly as mentioned before
+3. Then you could reload weights of the model: 
 ```py
 model.load_weights('./checkpoints/my_checkpoint')
 ```
-With this model, you could now to predict the image class like following: 
+With this model, you could now to __predict__ the image class like this: 
 ```py
 classif_prob = model.predict(X_val)
 pred_classes_argmax = np.argmax(classif_prob,axis=-1)
@@ -241,8 +245,10 @@ print("Predicted class:", predicted_cls)
 
 > Predicted class: 0
 ```
-3. Evaluation
-    The pretrained model cannot be directly used for evaluation, but rather firstly compile them: 
+Since softmax function gives us the probabilities of all classes, we should choose the class that possesses the highest probiblity among all of them and return the corresponding index(class). 
+
+## 3. Evaluation
+The pretrained model cannot be directly used for evaluation, but rather firstly compile them: 
 ```py
 from tensorflow.keras.optimizers import RMSprop
 
@@ -273,8 +279,8 @@ for i in range(0, 25):
 plt.show()
 ```
  <img src="./img/predicted.png" width = "1000" height = "500"  align=center />
- 
-It's a little bit unclear, but you could find this image in **img/predicted.png.**
+
+It's a little bit unclear, but you could find this image [here](https://github.com/qiaw99/Remote-Sensing-Images-Classification/blob/main/img/predicted.png)
 
 ![](./img/loss.png)
 ![](./img/loss1.png)
