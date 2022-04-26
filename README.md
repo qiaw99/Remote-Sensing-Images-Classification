@@ -247,7 +247,7 @@ print("Predicted class:", predicted_cls)
 ```
 Since softmax function gives us the probabilities of all classes, we should choose the class that possesses the highest probiblity among all of them and return the corresponding index(class). 
 
-## 3. Evaluation
+## 4. Evaluation
 The pretrained model cannot be directly used for evaluation, but rather firstly compile them: 
 ```py
 from tensorflow.keras.optimizers import RMSprop
