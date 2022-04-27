@@ -1,5 +1,6 @@
 import tensorflow as tf
 import os
+import sys
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,7 +49,8 @@ def evaluate():
     model = Model(inputs, output)
 
     print("[Info] loading weights.")
-    model.load_weights('./checkpoints/my_checkpoint')
+    path = sys.argv[1]
+    model.load_weights('./'+ path + '/my_checkpoint')
     with open("./test.npy", "rb") as f:
         X_val = np.load(f, allow_pickle=True)
         y_val = np.load(f, allow_pickle=True)

@@ -29,5 +29,5 @@ jobs:
         ls -R
     - name: Evaluate the model
       run: |
-        python3 evaluate.py
+        python3 evaluate.py checkpoints
 
