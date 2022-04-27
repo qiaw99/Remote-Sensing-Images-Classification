@@ -171,11 +171,11 @@ The x-axis stands for each corresponding class and y-axis stands for the number 
 The exact model will be discussed in the next part. 
 
 ### __2 c)__ 
-A baseline model should be established. However, I only build one model because of time limitation. But I think my model should be in some sense reasonably good to do the classification. Nevertheless, I would briefly explain my initial idea if I would implement a model for classfication task. The first choice to handle image problems is of course using __Convolutional Neural Network(CNN)__ by executing a series of convolutions and pooling operations which is ended by a set of __fully connected layers__ for classifications. However, we might encounter problems like vanishing or exploding gradients. Provided that the CNN is relatively shallow,  we may use __Batch Normalization__ or __Layer Normalization__ to fix it. But what if we just keep stacking more and more convolutional and pooling layers? With the increasing number of layers, the performance(accuracy) gets saturated which is not caused by overfitting. Since the given classification problem consists of 21 classes, I decided to use __ResNet 50__ which was in 2015 proposed by __Kaiming et. al__. ResNet can solve this problem by stacking multiple identity blockes which refer to residual path and convolutional blocks. 
+A baseline model should be established. I would briefly explain my initial idea if I would implement a model for classfication task. In tradition the first choice to handle image problems is of course using __Convolutional Neural Network(CNN)__ by executing a series of convolutions and pooling operations which is ended by a set of __fully connected layers__ for classifications. However, we might encounter problems like vanishing or exploding gradients. Provided that the CNN is relatively shallow,  we may use __Batch Normalization__ or __Layer Normalization__ to fix it. But what if we just keep stacking more and more convolutional and pooling layers? With the increasing number of layers, the performance(accuracy) gets saturated which is not caused by overfitting. Since the given classification problem consists of 21 classes, I decided to use __ResNet 50__ which was in 2015 proposed by __Kaiming et. al__. ResNet can solve this problem by stacking multiple identity blockes which refer to short cut and convolutional blocks. 
 
 __Improvements:__
-* Within model: ResNet uses already Batch Normalization. What's more, we could use __dropout__ and __data augmentation__ like __clipping, rotation__, etc. so that the model can become more stable to unseen images.
-* For model: In recent year, __transformer__ using __Attention mechanism__ which was published in 2017 is proven as really well performance model in the field of __Natural Language Processing(NLP)__. Recently, transformer is used also in the field of Computer Vision as __vision transformer(ViT)__ which is published in 2021 by putting more information(patch and position embedding). Thus, I would believe that using ViT would be a good way to improve if the given number of training images are enough much. 
+* Within model: ResNet uses already Batch Normalization. What's more, we could use __dropout__ and __data augmentation__ like __clipping, rotation__, etc to generate more data letting model see more images with different orientation to better get generalized so that the model can become more stable to unseen images.
+* For model: In recent year, __transformer__ using __Attention mechanism__ which was published in 2017 is proven as really well performance model in the field of __Natural Language Processing(NLP)__. Recently, transformer is used also in the field of Computer Vision as __vision transformer(ViT)__ which is published in 2020 by putting more information(patch and position embedding). Thus, I would believe that using ViT would be a good way to improve if the given number of training images are enough much. 
 
 ### __2 d)__
 The evaluation metrics for classification is commonly computing __the cross entropy loss between the labels and predictions__.
@@ -290,6 +290,47 @@ From both figures we can observe that, the accuracy keeps increasing as epochs g
 Epoch 100/100
 27/27 [==============================] - 11s 394ms/step - loss: 0.8822 - accuracy: 0.7105 - val_loss: 1.4790 - val_accuracy: 0.6435
 ```
-In the end, we get accuracy for training 71% and for validation 64% which is pretty good. The final test accuracy is only 41%, there is a huge gap between validation and testing accuracy which results that I could actually train the model with more iterations. However, I don't have that much time for it. [TODO] 
+In the end, we get accuracy for training 71% and for validation 64% which is pretty good. The final test accuracy is only 41% unfortunately. There is a gap between the validation accuracy and test accuracy.  Even if I would get involved into more deeper model - __ResNet 152__ and tried different optimizers to get rid of local optima, the accuracy cannot significantly be improved. I infer the problem  is that I transfer the image into 3 channels(for easy training). However, if the number of channels increases, the performance should be in some sense improved.
+
+## 5. Update
+### Vision-Transformer
+![](https://miro.medium.com/max/770/1*knMFhba4tijWyk3zhfvCEw.png)
+
+Since I've trained this model yesterday[24.04], I don't have that time to write report for that. 
+
+![](./img/1.png)
+![](./img/2.png)
+
+As you can see, transformer has archieved a better performance even the number of training data is same: 
+```py
+13/13 [==============================] - 5s 382ms/step - loss: 0.3410 - accuracy: 0.9044 - top-5-accuracy: 0.9910 - val_loss: 1.3236 - val_accuracy: 0.6860 
+Test accuracy: 68.06%
+```
+
+Although the accuracy is improved only by around 4%, but if we could generate more image data using data augmentation e.g. __ImageDataGenerator__ defined in __tensorflow.keras.preprocessing.image__ like this:
+```py
+# create an image generator instance
+train_datagen = ImageDataGenerator(preprocessing_function=preprocess_image_input,
+    rotation_range = 30,
+    width_shift_range = 0.2, 
+    height_shift_range=0.2,
+    shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        fill_mode='nearest')
+
+train_generator =  train_datagen.flow_from_directory(
+        # target directory
+        train_dir,
+        # All images will be resized
+        target_size=(IMAGE_WIDTH, IMAGE_HEIGHT),
+        batch_size = BATCH_SIZE,
+        # Since we use categorical_crossentropy loss, we need categorical labels 
+        class_mode='categorical')
+```
+So when we train the model, we can just pass generator to it instead of X_train, y_train. 
+
+If you would like to rebuild the model, you can find all weights [here](https://drive.google.com/drive/folders/12C-V5dTt2uckGNNcOuBBFGmGmL10dIVy?usp=sharing), because this weight file is too big to upload to github so I would rather store them in Google Drive. 
+
 
 
