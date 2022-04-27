@@ -306,6 +306,10 @@ As you can see, transformer has archieved a better performance even the number o
 13/13 [==============================] - 5s 382ms/step - loss: 0.3410 - accuracy: 0.9044 - top-5-accuracy: 0.9910 - val_loss: 1.3236 - val_accuracy: 0.6860 
 Test accuracy: 68.06%
 ```
+and test accuracy:
+```py
+9/9 [==============================] - 2s 77ms/step - loss: 5.1016 - accuracy: 0.4819
+```
 
 Although the accuracy is improved only by around 4%, but if we could generate more image data using data augmentation e.g. __ImageDataGenerator__ defined in __tensorflow.keras.preprocessing.image__ like this:
 ```py
